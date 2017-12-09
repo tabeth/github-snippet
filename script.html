@@ -1,0 +1,52 @@
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github-gist.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+<script>
+function l() {
+  var t = document.documentElement;
+  while (t.childNodes.length && t.lastChild.nodeType == 1 && !t.lastChild.snippet) {
+    t = t.lastChild;
+  }
+
+  return t.parentNode;
+};
+
+function loadGithubSnippet(e, snippetUrl) {
+  var xhr = new XMLHttpRequest();
+
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState == XMLHttpRequest.DONE) {
+      var userName, repoName, repoUrl, code, fileUrl;
+      var responseJson = JSON.parse(xhr.response);
+      code = atob(responseJson.content);
+      fileUrl= responseJson.html_url;
+      var match = snippetUrl.match(/(\w+)\/(\w+)/);
+      userName = match[1];
+      repoName = match[0];
+      repoUrl = 'https://github.com/' + userName + '/' + repoName;
+      fileName = responseJson.name;
+
+      s.style.border = '1px solid #ddd';
+      s.style.borderBottom = '1px solid #ccc';
+      s.style.borderRadius = '3px';
+      s.innerHTML = `<div style= "border-bottom: 1px solid #ccc" id="snippet-code"><pre><code>${code}</code></pre></div>`;
+      hljs.highlightBlock(s);
+
+      s.innerHTML = s.innerHTML +
+        `
+        <div style="padding: 10px; text-decoration-color: #666; overflow; hidden; font-size: 12px; font-family: sans-serif">
+        <a style="font-weight: 600; text-decoration: none; color: #666; float: right" href=${repoUrl}>view repo</a>
+        <a style="font-weight: 600; text-decoration: none; color: #666;" href=${fileUrl}>${fileName}</a> hosted by
+        <a style="font-weight: 600; text-decoration: none; color: #666" href="https://github.com">GitHub</a>
+        </div>
+        `
+    }
+  };
+
+  var d = document;
+  s = d.createElement('div');
+  e.appendChild(s);
+  xhr.open('GET', 'https://api.github.com/repos/' + snippetUrl);
+  xhr.send(null);
+}
+</script>
