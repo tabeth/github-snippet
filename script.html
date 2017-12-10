@@ -20,9 +20,9 @@ function loadGithubSnippet(e, snippetUrl, options = null) {
       var responseJson = JSON.parse(xhr.response);
       code = atob(responseJson.content);
       fileUrl= responseJson.html_url;
-      var match = snippetUrl.match(/(\w+)\/(\w+)/);
-      userName = match[1];
-      repoName = match[0];
+      var match = snippetUrl.split('/');
+      userName = match[0];
+      repoName = match[1];
       repoUrl = 'https://github.com/' + userName + '/' + repoName;
       fileName = responseJson.name;
 
