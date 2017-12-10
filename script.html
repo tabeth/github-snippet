@@ -11,7 +11,7 @@ function l() {
   return t.parentNode;
 };
 
-function loadGithubSnippet(e, snippetUrl) {
+function loadGithubSnippet(e, snippetUrl, options = null) {
   var xhr = new XMLHttpRequest();
 
   xhr.onreadystatechange = function() {
@@ -29,7 +29,23 @@ function loadGithubSnippet(e, snippetUrl) {
       s.style.border = '1px solid #ddd';
       s.style.borderBottom = '1px solid #ccc';
       s.style.borderRadius = '3px';
-      s.innerHTML = `<div style= "border-bottom: 1px solid #ccc" id="snippet-code"><pre><code>${code}</code></pre></div>`;
+
+      var c = document.createElement('div');
+      c.style.borderBottom = '1px solid #ccc';
+      c.id = 'snippet-code';
+
+      var c1 = document.createElement('pre');
+      var c2 = document.createElement('code');
+      if (options && options.asHtml) {
+        c2.innerHTML = code;
+      } else {
+        c2.innerText = code;
+      }
+
+      c1.appendChild(c2);
+      c.appendChild(c1);
+      s.innerHTML = c.outerHTML;
+
       hljs.highlightBlock(s);
 
       s.innerHTML = s.innerHTML +
@@ -44,9 +60,10 @@ function loadGithubSnippet(e, snippetUrl) {
   };
 
   var d = document;
-  s = d.createElement('div');
+  var s = d.createElement('div');
   e.appendChild(s);
   xhr.open('GET', 'https://api.github.com/repos/' + snippetUrl);
   xhr.send(null);
 }
 </script>
+
